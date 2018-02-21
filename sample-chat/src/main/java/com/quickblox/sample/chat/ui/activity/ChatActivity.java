@@ -79,6 +79,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
     private ArrayList<QBChatMessage> unShownMessages;
     private int skipPagination = 0;
     private ChatMessageListener chatMessageListener;
+    private boolean checkAdapterInit;
 
     public static void startForResult(Activity activity, int code, QBChatDialog dialogId) {
         Intent intent = new Intent(activity, ChatActivity.class);
@@ -504,7 +505,8 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                 // The newest messages should be in the end of list,
                 // so we need to reverse list to show messages in the right order
                 Collections.reverse(messages);
-                if (messagesList.isEmpty()) {
+                if (!checkAdapterInit) {
+                    checkAdapterInit = true;
                     chatAdapter.addList(messages);
                     addDelayedMessagesToAdapter();
                 } else {
@@ -569,6 +571,7 @@ public class ChatActivity extends BaseActivity implements OnImagePickedListener 
                 switch (qbChatDialog.getType()) {
                     case GROUP:
 //                        chatAdapter = null;
+                        checkAdapterInit = false;
                         // Join active room if we're in Group Chat
                         runOnUiThread(new Runnable() {
                             @Override
